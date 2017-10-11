@@ -1,0 +1,22 @@
+---
+- name: Instalando software de control de versiones para mediawiki (git)
+  apt:
+    name: git
+    state: present
+
+- name: Descargando y extrayendo version estable de mediawiki
+  unarchive:
+      src: "{{ url_stable }}"
+      dest: /opt/
+      list_files: yes
+      remote_src: yes
+
+- name: Incluyendo mediawiki a apache
+  command: cp -R -u {{ filename_dir }} {{ media_web_dir }}
+
+- name: Añadiendo configuraciones de MediaWiki
+  template:
+    src: LocalSettings.php.j2
+    dest: "{{ media_config_file }}"
+  notify:
+    - restart apache

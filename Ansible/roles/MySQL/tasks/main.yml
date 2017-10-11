@@ -1,0 +1,81 @@
+---
+- name: Especificando contraseña root para MySQL
+  debconf:
+   name: mysql-server
+   question: mysql-server/root_password
+   value: "{{ mysql_root_password }}"
+   vtype: password
+
+- name: Confirmando contraseña root de MySQL
+  debconf:
+   name: mysql-server
+   question: mysql-server/root_password_again
+   value: "{{ mysql_root_password }}"
+   vtype: password
+
+- name: Instalando MySQL y dependencies
+  apt:
+   pkg: "{{ item }}"
+   state: installed
+  with_items:
+   - mysql-server
+   - python-mysqldb
+
+- name: Seleccionando directorio de mysql por defecto
+  command: usermod -d /var/lib/mysql/ mysql
+
+- name: Añadiendo configuracion y realizando backup de la original
+  template:
+   src: mysqld.cnf.j2
+   dest: /etc/mysql/mysql.conf.d/mysqld.cnf
+   owner: root
+   group: root
+   mode: 0644
+   backup: yes
+
+#Problemas iniciando servicio con modulo service (no lo inicia)
+- name: Iniciando servicio
+  command: service mysql start
+  register: start
+
+- name: Habilitando servicio Mysql al inicio del host
+  service: name=mysql state=started enabled=yes
+
+- name: Respuesta de inicio
+  debug: var=start
+
+- name: Removiendo todas las cuentas anonimas
+  mysql_user:
+    login_user: "{{ mysql_root_usr }}"
+    login_password: "{{ mysql_root_password }}"
+    login_unix_socket: "{{ mysql_sock_path }}"
+    name: ''
+    host_all: yes
+    state: absent
+  notify:
+   - restart mysql
+
+ #GRANT ALL ON *.* to mediaW@'host_ip or % (for all)' IDENTIFIED BY 'pwd';
+- name: Creando usuario mediaW con permisos de conexion externa
+  mysql_user:
+    login_user: "{{ mysql_root_usr }}"
+    login_password: "{{ mysql_root_password }}"
+    name: "{{ mysql_media_usr }}"
+    host: "{{ item }}"
+    password: "{{ mysql_media_pwd }}"
+    priv: "*.*:ALL,GRANT"
+    state: present
+  with_items:
+   - 127.0.0.1
+   - "localhost"
+   - "%"
+  notify:
+   - restart mysql
+
+- name: Creando base de datos para MediaWiki con nombre MediaWiki
+  mysql_db:
+    login_user: "{{ mysql_media_usr }}"
+    login_password: "{{ mysql_media_pwd }}"
+    name: MediaWiki
+    encoding: utf8
+    state: present

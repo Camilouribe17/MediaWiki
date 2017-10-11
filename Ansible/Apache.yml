@@ -1,0 +1,6 @@
+---
+- name: Configurando Apache en ServerMain
+  hosts: main
+  remote_user: root
+  roles:
+    - Apache

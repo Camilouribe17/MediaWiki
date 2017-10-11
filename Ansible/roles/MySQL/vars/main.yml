@@ -1,0 +1,6 @@
+---
+mysql_root_usr: root
+mysql_media_usr: mediaW
+mysql_root_password: PwdProof2017-
+mysql_sock_path: /var/run/mysqld/mysqld.sock
+mysql_media_pwd: Mediadb2017-
