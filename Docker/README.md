@@ -6,7 +6,8 @@ para la Configuracion de la autenticacion por llaves en el servicio SSH de cada 
 
 **NOTA:** si desean generan sus propias llaves pueden realizarlo con el siguiente
 comando `$ ssh-keygen -f /path/to/Ansible_wiki/Keys/key`, donde lo que cambiaria es la ruta
-/path/to/ la cual podria ser absoluta o relativa para mas información consulte [aquí](http://dep.fie.umich.mx/~stinoco/archivos/RutasAbsolutasYRelativas.pdf).
+/path/to/ la cual podria ser absoluta o relativa
+(http://dep.fie.umich.mx/~stinoco/archivos/RutasAbsolutasYRelativas.pdf).
 
 ## Creación del contenedor ##
 
@@ -21,12 +22,6 @@ Se ejecuta el siguiente comando para la realización del pasos
 ```
 $ (sudo) docker build -t {{ nombre contenedor }} .
 
-En mi caso el {{ nombre contenedor }} será igual a server
-
-$ (sudo) docker build -t wiki_host .
-
-(sudo) -> Quiere decir que es opcional aveces con la instalación en sistemas linux, se requiere
-sino se realiza el paso de POST-INSTALLATION mostrado en la documentacion.
 ```
 
 Y tenemos creado nuestra imagen con ubuntu y ssh activo.
@@ -91,11 +86,6 @@ Para realizar el registro de nuestros contenedores hay 2 opciones.
 ```
 $ ssh root@{{ nombre contenedor }} -p {{ puerto de ssh }} -i {{ llave privada }}
 
-> En nuestro caso ambos comandos quedarian de la siguiente forma
-
-$ ssh root@wiki_main -p 2221 -i /path/to/Ansible_wiki/Keys/key
-
-$ ssh root@wiki_db -p 2222 -i /path/to/Ansible_wiki/Keys/key
 ```
 
 y podriamos apreciar un mensaje como el siguiente (en cada primer intento de conexion)
@@ -114,11 +104,6 @@ Para esta opcion solamente basta con ejecutar los siguientes comandos, ya que es
 Estructura
 $ ssh -o StrictHostKeyChecking=no root@{{ nombre contenedor }} -p {{ puerto ssh }} -i {{ llave privada }} hostname
 
-En nuestro caso seria lo siguiente
-
-$ ssh -o StrictHostKeyChecking=no root@wiki_main -p 2221 -i /path/to/Ansible_wiki/Keys/key hostname
-
-$ ssh -o StrictHostKeyChecking=no root@wiki_db -p 2222 -i /path/to/Ansible_wiki/Keys/key hostname
 ```
 
 y podriamos apreciar un mensaje como el siguiente
