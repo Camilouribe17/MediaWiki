@@ -90,8 +90,6 @@ $ ssh root@{{ nombre contenedor }} -p {{ puerto de ssh }} -i {{ llave privada }}
 
 y podriamos apreciar un mensaje como el siguiente (en cada primer intento de conexion)
 
-![alt-text](/img/connection.png)
-
 Al cual al ingresar *yes* se registrara el host, en los conocidos por ssh.
 
 La otra opcion es:
@@ -105,10 +103,3 @@ Estructura
 $ ssh -o StrictHostKeyChecking=no root@{{ nombre contenedor }} -p {{ puerto ssh }} -i {{ llave privada }} hostname
 
 ```
-
-y podriamos apreciar un mensaje como el siguiente
-
-![alt-text](/img/connection2.png)
-
-Realizado los pasos anteriores, se procede a probar la conexion a los contenedores y podria apreciarse lo siguientes
-![alt-text](/img/connection3.png).
